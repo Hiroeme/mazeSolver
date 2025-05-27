@@ -85,3 +85,16 @@ class Cell():
 
             new_line = Line(point_one, point_two)
             self.__win.draw_line(new_line, "black")
+
+    def draw_move(self, to_cell, undo=False):
+        fill_color = "red" if not undo else "grey"
+
+        mid_x1, mid_y1 = (self.__x1 + self.__x2) // 2, (self.__y1 + self.__y2) // 2
+        mid_x2, mid_y2 = (to_cell.__x1 + to_cell.__x2) // 2, (to_cell.__y1 + to_cell.__y2) // 2 
+
+        center_point = Point(mid_x1, mid_y1)
+        to_cell_center_point = Point(mid_x2, mid_y2)
+
+        new_line = Line(center_point, to_cell_center_point)
+        
+        self.__win.draw_line(new_line, fill_color)        

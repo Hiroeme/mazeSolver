@@ -7,8 +7,9 @@ def main():
     cell_one.draw(100, 100, 300, 300)
 
     cell_two = Cell(win)
-    cell_two.has_bottom_wall = False
     cell_two.draw(50, 50, 75, 75)
+
+    cell_one.draw_move(cell_two)
     win.wait_for_close()
 
 main()
