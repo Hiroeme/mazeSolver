@@ -44,7 +44,7 @@ class Cell():
         self.has_left_wall = True
         self.has_right_wall = True
         self.has_top_wall = True
-        self.has_bottom_wall = True
+        self.has_bot_wall = True
 
         self.__x1 = -1
         self.__x2 = -1
@@ -66,6 +66,12 @@ class Cell():
 
             new_line = Line(point_one, point_two)
             self.__win.draw_line(new_line, "black")
+        else:
+            point_one = Point(self.__x1, self.__y1)
+            point_two = Point(self.__x1, self.__y2)
+
+            new_line = Line(point_one, point_two)
+            self.__win.draw_line(new_line, "white")
 
         if self.has_right_wall:
             point_one = Point(self.__x2, self.__y1)
@@ -73,6 +79,12 @@ class Cell():
 
             new_line = Line(point_one, point_two)
             self.__win.draw_line(new_line, "black")
+        else:
+            point_one = Point(self.__x1, self.__y1)
+            point_two = Point(self.__x2, self.__y1)
+
+            new_line = Line(point_one, point_two)
+            self.__win.draw_line(new_line, "white")            
 
         if self.has_top_wall:
             point_one = Point(self.__x1, self.__y1)
@@ -80,13 +92,24 @@ class Cell():
 
             new_line = Line(point_one, point_two)
             self.__win.draw_line(new_line, "black")
+        else:
+            point_one = Point(self.__x1, self.__y1)
+            point_two = Point(self.__x2, self.__y1)
 
-        if self.has_bottom_wall:
+            new_line = Line(point_one, point_two)
+            self.__win.draw_line(new_line, "white")            
+        if self.has_bot_wall:
             point_one = Point(self.__x1, self.__y2)
             point_two = Point(self.__x2, self.__y2)
 
             new_line = Line(point_one, point_two)
             self.__win.draw_line(new_line, "black")
+        else:
+            point_one = Point(self.__x1, self.__y2)
+            point_two = Point(self.__x2, self.__y2)
+
+            new_line = Line(point_one, point_two)
+            self.__win.draw_line(new_line, "white")
 
     def draw_move(self, to_cell, undo=False):
         if not self.__win:
