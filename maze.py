@@ -105,31 +105,79 @@ class Maze():
                 return
 
             # pick random neighbor
-            neighbor_x, neighbor_y = neighbors[random.randrange(len(neighbors))]
+            neighbor_i, neighbor_j = neighbors[random.randrange(len(neighbors))]
             # knock down wall between current and neighbor
 
-            difference = [neighbor_x - i, neighbor_y - j]
+            difference = [neighbor_i - i, neighbor_j - j]
             # up knock neighbor bottom and current top
             if difference == [0, -1]:
                 self.__cells[i][j].has_top_wall = False
-                self.__cells[neighbor_x][neighbor_y].has_bot_wall = False
+                self.__cells[neighbor_i][neighbor_j].has_bot_wall = False
             # down knock neighbor top and current bot
             if difference == [0, 1]:
                 self.__cells[i][j].has_bot_wall = False
-                self.__cells[neighbor_x][neighbor_y].has_top_wall = False
+                self.__cells[neighbor_i][neighbor_j].has_top_wall = False
             # right knock neighbor left and current right
             if difference == [1, 0]:
                 self.__cells[i][j].has_right_wall = False
-                self.__cells[neighbor_x][neighbor_y].has_left_wall = False
+                self.__cells[neighbor_i][neighbor_j].has_left_wall = False
             # left knock neighbor right and current left
             if difference == [-1, 0]:
                 self.__cells[i][j].has_left_wall = False
-                self.__cells[neighbor_x][neighbor_y].has_right_wall = False
+                self.__cells[neighbor_i][neighbor_j].has_right_wall = False
             # recurse onto the next neighbor
-            self.__break_walls_r(neighbor_x, neighbor_y)
+            self.__break_walls_r(neighbor_i, neighbor_j)
 
 
     def __reset_cells_visited(self):
         for row in self.__cells:
             for cell in row:
                 cell.visited = False
+
+    def solve(self):
+        return self._solve_r(0, 0)
+
+    def _solve_r(self, i, j):
+        
+        directions = [[0,1], [0,-1], [1,0], [-1, 0]]
+        self.__animate()
+        self.__cells[i][j].visited = True
+        current_cell = self.__cells[i][j]
+        
+        if i == self.__num_rows - 1 and j == self.__num_cols - 1:
+            return True
+        
+        for dx, dy in directions:
+            new_i = i + dx
+            new_j = j + dy
+            
+            # valid cell check
+            if new_i == self.__num_rows or new_i < 0 or new_j == self.__num_cols or new_j < 0:
+                continue
+
+            # is there a wall check
+            if dx == 1 and current_cell.has_right_wall:
+                continue
+            if dx == -1 and current_cell.has_left_wall:
+                continue
+            if dy == 1 and current_cell.has_bot_wall:
+                continue
+            if dy == -1 and current_cell.has_top_wall:
+                continue
+                
+
+            new_cell = self.__cells[new_i][new_j]
+
+            if new_cell.visited:
+                continue
+
+            # moving
+            current_cell.draw_move(new_cell)
+            if (self._solve_r(new_i, new_j)):
+                return True
+            # undo
+            current_cell.draw_move(new_cell, undo=True)
+
+        return False
+
+            
