@@ -27,10 +27,11 @@ class Maze():
         # stores cells as a 2D List
         self.__cells = []
 
-        self.__create_cells()
-
-        self.__break_entrance_and_exit()
-        self.__break_walls_r(0,0)
+        if self.__num_rows != 0 and self.__num_cols != 0:
+            self.__create_cells()
+            self.__break_entrance_and_exit()
+            self.__break_walls_r(0,0)
+            self.__reset_cells_visited()
 
 
     def __create_cells(self):
@@ -126,3 +127,9 @@ class Maze():
                 self.__cells[neighbor_x][neighbor_y].has_right_wall = False
             # recurse onto the next neighbor
             self.__break_walls_r(neighbor_x, neighbor_y)
+
+
+    def __reset_cells_visited(self):
+        for row in self.__cells:
+            for cell in row:
+                cell.visited = False
