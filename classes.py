@@ -17,30 +17,30 @@ class Line():
 
 class Window():
     def __init__(self, width, height):
-        self.root_widget = Tk()
-        self.root_widget.title = "Graphical User Interface Maze Solver"
-        self.canvas = Canvas(bg="white", height=height, width=width)
-        self.canvas.pack(fill=BOTH, expand=1)
-        self.running = False
+        self.__root_widget = Tk()
+        self.__root_widget.title = "Graphical User Interface Maze Solver"
+        self.__canvas = Canvas(bg="white", height=height, width=width)
+        self.__canvas.pack(fill=BOTH, expand=1)
+        self.__running = False
 
     def redraw(self):
-        self.root_widget.update_idletasks()
-        self.root_widget.update()
+        self.__root_widget.update_idletasks()
+        self.__root_widget.update()
 
     def wait_for_close(self):
-        self.running = True
-        while self.running:
+        self.__running = True
+        while self.__running:
             self.redraw()
 
     def close(self):
-        self.running = False
-        self.root_widget.protocol("WM_DELETE_WINDOW", self.close)
+        self.__running = False
+        self.__root_widget.protocol("WM_DELETE_WINDOW", self.close)
 
     def draw_line(self, line : Line, fill_color : str):
-        line.draw(self.canvas, fill_color)
+        line.draw(self.__canvas, fill_color)
 
 class Cell():
-    def __init__(self, window : Window):
+    def __init__(self, window : Window = None):
         self.has_left_wall = True
         self.has_right_wall = True
         self.has_top_wall = True
@@ -53,6 +53,8 @@ class Cell():
         self.__win = window
 
     def draw(self, x1, y1, x2, y2):
+        if not self.win:
+            return
         self.__x1 = x1
         self.__y1 = y1
         self.__x2 = x2
@@ -87,6 +89,8 @@ class Cell():
             self.__win.draw_line(new_line, "black")
 
     def draw_move(self, to_cell, undo=False):
+        if not self.win:
+            return
         fill_color = "red" if not undo else "grey"
 
         mid_x1, mid_y1 = (self.__x1 + self.__x2) // 2, (self.__y1 + self.__y2) // 2
@@ -96,5 +100,6 @@ class Cell():
         to_cell_center_point = Point(mid_x2, mid_y2)
 
         new_line = Line(center_point, to_cell_center_point)
-        
-        self.__win.draw_line(new_line, fill_color)        
+
+        self.__win.draw_line(new_line, fill_color)
+
