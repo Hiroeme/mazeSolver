@@ -115,7 +115,7 @@ class Cell():
     def draw_move(self, to_cell, undo=False):
         if not self.__win:
             return
-        fill_color = "red" if not undo else "grey"
+        fill_color = "red" if not undo else "blue"
 
         mid_x1, mid_y1 = (self.__x1 + self.__x2) // 2, (self.__y1 + self.__y2) // 2
         mid_x2, mid_y2 = (to_cell.__x1 + to_cell.__x2) // 2, (to_cell.__y1 + to_cell.__y2) // 2 
