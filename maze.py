@@ -1,3 +1,4 @@
+from collections import defaultdict, deque
 from classes import Window, Cell
 import time, random
 
@@ -72,7 +73,7 @@ class Maze():
         if not self.__window:
             return
         self.__window.redraw()
-        time.sleep(0.01)
+        time.sleep(0.03)
 
     def __break_entrance_and_exit(self):
         self.__cells[0][0].has_top_wall = False
@@ -128,14 +129,90 @@ class Maze():
             # recurse onto the next neighbor
             self.__break_walls_r(neighbor_i, neighbor_j)
 
-
     def __reset_cells_visited(self):
         for row in self.__cells:
             for cell in row:
                 cell.visited = False
 
     def solve(self):
-        return self._solve_r(0, 0)
+        # return self._solve_r(0, 0)
+        return self._solve_bfs(0,0)
+
+    def _solve_bfs(self, i, j):
+        directions = [[0,1], [0,-1], [1,0], [-1, 0]]
+        parent_map = defaultdict(tuple)
+        queue = deque()
+        # add current
+        queue.append([i, j])
+        
+        # need a way to go back to the last split, undoing the paths we traversed 
+        # previous cell
+        found = False
+        levels = []
+        # while queue
+        while len(queue) > 0:
+            if found:
+                break
+            frontier = []
+            for _ in range(len(queue)):
+                self.__animate()
+                # pop from queue
+                i, j = queue.popleft()
+                current_cell = self.__cells[i][j]
+                current_cell.visited = True
+
+                # if we reached exit exit
+                if i == self.__num_rows - 1 and j == self.__num_cols - 1:
+                    found = True
+                    break
+
+                # add valid neighbors from pop
+                for dx, dy in directions:
+                    new_i = i + dx
+                    new_j = j + dy
+
+                    if new_i == self.__num_rows or new_i < 0 or new_j == self.__num_cols or new_j < 0:
+                        continue
+                    if self.__cells[new_i][new_j].visited:
+                        continue
+                    if dx == 1 and current_cell.has_right_wall:
+                        continue
+                    if dx == -1 and current_cell.has_left_wall:
+                        continue
+                    if dy == 1 and current_cell.has_bot_wall:
+                        continue
+                    if dy == -1 and current_cell.has_top_wall:
+                        continue
+                    
+                    parent_map[(new_i, new_j)] = (i, j)
+                    frontier.append([new_i, new_j])
+                    queue.append([new_i, new_j])
+            levels.append(frontier)
+            
+        if not found:
+            return False
+        
+        solution_path = []
+        curr = (self.__num_rows - 1, self.__num_cols - 1)
+        while curr != (0, 0):
+            solution_path.append(curr)
+            curr = parent_map[curr]
+        solution_path.append((0,0))
+        solution_path.reverse()
+
+        solution_path_set = set(solution_path)
+        for level in levels:
+            for i, j in level:
+                pi, pj = parent_map[(i, j)]
+                parent = self.__cells[pi][pj]
+                current = self.__cells[i][j]
+                if (i, j) in solution_path_set:
+                    parent.draw_move(current)
+                else:
+                    parent.draw_move(current, undo=True)
+                self.__animate()
+
+        return True
 
     def _solve_r(self, i, j):
         
