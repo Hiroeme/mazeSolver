@@ -14,8 +14,8 @@ def main():
     
     win = Window(screen_x, screen_y)
 
-    maze = Maze(margin, margin, num_rows, num_cols, cell_size_x, cell_size_y, win)
-    maze._Maze__break_entrance_and_exit()
+    maze = Maze(margin, margin, num_rows, num_cols, cell_size_x, cell_size_y, win, 10)
+
     win.wait_for_close()
 
 main()
