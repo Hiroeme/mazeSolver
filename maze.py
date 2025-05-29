@@ -134,16 +134,21 @@ class Maze():
             for cell in row:
                 cell.visited = False
 
-    def solve(self):
-        # return self._solve_r(0, 0)
-        return self._solve_bfs(0,0)
+    def solve(self, start_i, start_j, method="dfs"):
+        if method == "dfs":
+            return self._solve_r(start_i, start_j)
+        if method == "bfs":
+            return self._solve_bfs(start_i, start_j)
+        
+        # no method found
+        return True
 
-    def _solve_bfs(self, i, j):
+    def _solve_bfs(self, start_i, start_j):
         directions = [[0,1], [0,-1], [1,0], [-1, 0]]
         parent_map = defaultdict(tuple)
         queue = deque()
         # add current
-        queue.append([i, j])
+        queue.append([start_i, start_j])
         
         # need a way to go back to the last split, undoing the paths we traversed 
         # previous cell
@@ -194,10 +199,10 @@ class Maze():
         
         solution_path = []
         curr = (self.__num_rows - 1, self.__num_cols - 1)
-        while curr != (0, 0):
+        while curr != (start_i, start_j):
             solution_path.append(curr)
             curr = parent_map[curr]
-        solution_path.append((0,0))
+        solution_path.append((start_i,start_j))
         solution_path.reverse()
 
         solution_path_set = set(solution_path)
